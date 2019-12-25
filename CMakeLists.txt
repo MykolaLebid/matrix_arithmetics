@@ -10,3 +10,21 @@ HunterGate(
 )
 project(matrix_arithmetics VERSION 1.0.0)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# git is required for building third-party dependencies
+find_package(Git)
+
+# defines targets and add source files
+add_subdirectory(src)
+
+#add external dependencies for the testing
+hunter_add_package(GTest)
+find_package(GTest CONFIG REQUIRED)
+find_package(GMock CONFIG REQUIRED)
+# enable testing and define tests
+add_subdirectory(tests)
+
+
