@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <algorithm>
 //#include <stdexcept> 
 
 namespace mtx{
@@ -21,19 +22,20 @@ class Matrix
 //Special member functions	
 	//constructor
 	Matrix(const size_t _rowN, const size_t _colN);
+	//Matrix() = delete;
 	//copying 
 	Matrix(const Matrix&) = default;
-	Matrix& operator=(const Matrix&) = default;
+	Matrix& operator=(const Matrix&) = delete;
 	//moving
-	Matrix(Matrix&& rhs) = default;
+	Matrix(Matrix&&) = default;
 	Matrix& operator=(Matrix &&) = default;
         //destuctor	
-	virtual ~Matrix(){};
+	//virtual ~Matrix(){};
 //Mathematical operations
 	Matrix operator+(const Matrix& rhs);
-	Matrix& operator+=(const Matrix& rhs); //return *this
-	Matrix operator-(const Matrix& rhs);
-	Matrix& operator-=(const Matrix& rhs);
+	void operator+=(const Matrix& rhs);
+	//Matrix operator-(const Matrix& rhs);
+	//Matrix& operator-=(const Matrix& rhs);
 	Matrix operator*(const Matrix& rhs);
 	Matrix& operator*=(const Matrix& rhs);
 	Matrix& operator*(const NumType& rhs);
@@ -44,14 +46,16 @@ class Matrix
         NumType  operator() (size_t row, size_t col) const; // Get 
 
 	private:		
-	const size_t rowN_;
-	const size_t colN_;
-	const size_t m_size;	
+//Main data structures
+	size_t rowN_;
+	size_t colN_;
+	size_t m_size;	
 	using m_type = std::vector<NumType>;
 	m_type m; 
 //Check exeption functions
 	void check_range(const size_t rowIndex,
 		         const size_t colIndex);
+	void is_dim_equal_with(const Matrix& rhs) const;
 };// class Matrix{
 
 class MatrixException: public std::exception
@@ -81,7 +85,7 @@ inline NumType& Matrix<NumType>::operator()(size_t row, size_t col){
 		return m.at(row*rowN_ + col);
         } catch(const std::out_of_range& oor){
 		throw MatrixException("matrix index out of range");
-	};
+	}
 }
 
 template<typename NumType>
@@ -93,6 +97,28 @@ inline NumType Matrix<NumType>::operator()(size_t row, size_t col) const {
 	};
 }
 
+template<typename NumType>
+inline void Matrix<NumType>::is_dim_equal_with(const Matrix& rhs) const{
+	if ((rowN_!=rhs.rowN_)||(colN_!=rhs.colN_))
+		throw MatrixException("different size matrices");
+}
+
+template<typename NumType>
+inline void Matrix<NumType>::operator+=(const Matrix& rhs){
+	//TODO parallelisation with respect to size of a vector C++17
+	is_dim_equal_with(rhs);
+	std::transform (m.begin(), m.end(), 
+			rhs.m.begin(), m.begin(), 
+			std::plus<NumType>());
+}
+
+template<typename NumType>
+inline Matrix<NumType> Matrix<NumType>::operator+(const Matrix& rhs){ 
+	is_dim_equal_with(rhs);
+	Matrix<NumType> m_local = (*this);
+	m_local+=rhs;
+	return m_local; //named RWO is expacted
+}
 //template<typename NumType>
 //inline Matrix::Matrix(unsigned rows, unsigned cols)
 //  : rows_ (rows)
