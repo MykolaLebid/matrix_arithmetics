@@ -2,8 +2,8 @@
 // src file for matrix
 #include<matrix.h> 
 
-//#include <iostream>       // std::cerr
-//#include <stdexcept>      // std::length_error
+#include <iostream>       
+//#include <stdexcept>      
 using namespace mtx;
 
 TEST(TestMatrix, CheckOutOfMemoryExeption){
@@ -260,7 +260,7 @@ TEST_F(TestMatrixClass, RhsMultiplicationAndCopyAssignment){
 	ASSERT_THAT(m(1,1),testing::Eq(20));
 };
 
-TEST_F(TestMatrixClass, Vertorsum){
+TEST_F(TestMatrixClass, VertorSum){
 	std::vector<int> vec_1{1,2,3}, vec_2{7,8,9};
 	Matrix<int> m_1(vec_1), m_2(vec_2), m_sum;
 	
@@ -271,4 +271,24 @@ TEST_F(TestMatrixClass, Vertorsum){
 	ASSERT_THAT(m_sum(0,2),testing::Eq(12));
 };
 
+TEST_F(TestMatrixClass, SpeedNaiveMulti){
+	size_t rowN = 200;
+        size_t colN = 200;
+	Matrix<int> m(rowN,colN);
+	for(size_t i=0;i < rowN; i++)
+		for(size_t j=0; j<colN; j++)
+			m(i,j) = i+j;
 
+	Matrix<int> m_multi(m*m);	
+};
+
+TEST_F(TestMatrixClass, SpeedWithTransformMulti){
+	size_t rowN = 200;
+        size_t colN = 200;
+	Matrix<int> m(rowN,colN);
+	for(size_t i=0;i < rowN; i++)
+		for(size_t j=0; j<colN; j++)
+			m(i,j) = i+j;
+
+	Matrix<int> m_multi(m*m);	
+};

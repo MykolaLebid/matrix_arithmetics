@@ -1,7 +1,7 @@
 #ifndef Matrix_h
 #define Matrix_h
 
-#include <iostream>
+//#include <iostream>
 #include <vector>
 #include <memory>
 #include <string>
@@ -164,13 +164,9 @@ inline Matrix<NumType> operator*(const NumType& lhs, const Matrix<NumType>& rhs)
 template<typename NumType>
 inline Matrix<NumType> Matrix<NumType>::getTranspose() const{	
 	Matrix<NumType> m_local(colN_, rowN_);
-	//for(NumType e:m) std::cout<<e<<";"<<std::endl;
 	for(unsigned int i=0; i<colN_; i++)
 		for(unsigned int j=0; j<rowN_; j++)
 			m_local.m[i * rowN_ + j] = m[j * colN_ + i];
-
-	//std::cout << "after"<<std::endl;
-	//for(NumType e:m_local.m) std::cout<<e<<";"<<std::endl;
 	return m_local;
 };
 
@@ -179,26 +175,15 @@ template<typename NumType>
 inline Matrix<NumType> Matrix<NumType>::operator*(const Matrix& rhs){
 	is_multi_possible(rhs);
 	Matrix<NumType> result_m(rowN_,rhs.colN_);
-	//size_t rowN m.rowN_;
-	//size_t colN = result_m.colN_;
 	for(size_t i=0; i < rowN_; i++)
 		for(size_t j=0; j < rhs.colN_; j++){
 			size_t index = i*rhs.colN_ + j; 
 			result_m.m[index] = 0;
-	//		std::cout<<std::endl;
-			for(unsigned int k = 0; k <colN_; k++)// {
+			for(unsigned int k = 0; k <colN_; k++)
 				result_m.m[index]+= 
 					m[i*colN_ + k] * 
 					rhs.m[k*rhs.colN_ + j];
-//			std::cout<<"index="<< index <<
-//			   "; index_m="<<(i*colN_ + k)<< 
-//			   "; value_m="<< m[i*colN_ + k] <<
-//			   "; index_rhs="<< k*rhs.colN_ + j <<
-//			   "; value_rhs="<< rhs.m[k*rhs.colN_ + j]<<
-//			   std::endl;};
 		};
-
-	for(NumType e:result_m.m) std::cout<<e<<";"<<std::endl;
 	return result_m;	
 };
 
@@ -208,69 +193,17 @@ inline Matrix<NumType> Matrix<NumType>::operator&(const Matrix& rhs){
 	is_multi_possible(rhs);
 	Matrix<NumType> result_m(rowN_,rhs.colN_);
        	Matrix<NumType> tr(rhs.getTranspose());	
-	//size_t rowN m.rowN_;
-	//size_t colN = result_m.colN_;
 	for(size_t i=0; i < rowN_; i++)
 		for(size_t j=0; j < tr.rowN_; j++){
 			size_t index = i*tr.rowN_ + j; 
 			result_m.m[index] = 0;
-			std::cout<<std::endl;
-			for(unsigned int k = 0; k <colN_; k++) {
+			for(unsigned int k = 0; k <colN_; k++) 
 				result_m.m[index]+= 
 					m[i*colN_ + k] * 
 					tr.m[j*tr.colN_ + k];
-			std::cout<<"index="<< index <<
-			   "; index_m="<<(i*colN_ + k)<< 
-			   "; value_m="<< m[i*colN_ + k] <<
-			   "; index_rhs="<< j*tr.colN_ + k <<
-			   "; value_rhs="<< tr.m[j*tr.colN_ + k]<<
-			   std::endl;};
 		};
-
-	for(NumType e:result_m.m) std::cout<<e<<";"<<std::endl;
 	return result_m;	
 };
-
-
-//template<typename NumType>
-//inline Matrix::Matrix(unsigned rows, unsigned cols)
-//  : rows_ (rows)
-//  , cols_ (cols)
-////, data_ ← initialized below after the if...throw statement
-//{
-//  if (rows == 0 || cols == 0)
-//    throw BadIndex("Matrix constructor has 0 size");
-//  data_ = new double[rows * cols];
-//}
-//template<typename NumType>
-//class Vector: public Matrix<NumType>{
-//
-//};
-
-// custom allocator example
-//#include <cstddef>
-//#include <iostream>
-//#include <memory>
-//#include <vector>
-//
-//template <class T>
-//struct custom_allocator {
-//  typedef T value_type;
-//  custom_allocator() noexcept {}
-//  template <class U> custom_allocator (const custom_allocator<U>&) noexcept {}
-//  T* allocate (std::size_t n) { return static_cast<T*>(::operator new(n*sizeof(T))); }
-//  void deallocate (T* p, std::size_t n) { ::delete(p); }
-//};
-//
-//template <class T, class U>
-//constexpr bool operator== (const custom_allocator<T>&, const custom_allocator<U>&) noexcept
-//{return true;}
-//
-//template <class T, class U>
-//constexpr bool operator!= (const custom_allocator<T>&, const custom_allocator<U>&) noexcept
-//{return false;}
-
-
 
 };//namespace mtx{ 
 #endif
