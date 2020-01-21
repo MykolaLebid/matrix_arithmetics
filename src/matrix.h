@@ -1,4 +1,5 @@
 
+
 #ifndef Matrix_h
 #define Matrix_h
 
@@ -41,6 +42,7 @@ public:
   // MATRIX multiplication
   Matrix operator*(const Matrix &rhs);
   Matrix operator&(const Matrix &rhs); // optimized multiplication
+  Matrix operator^(const Matrix &rhs); // Reordered multiplication
   Matrix getTranspose() const;
   // Setter and Getter
   // TODO create one from the following 2 functions
@@ -133,7 +135,7 @@ inline Matrix<NumType> Matrix<NumType>::operator+(const Matrix &rhs) {
   return m_local; // named RWO is expacted
 }
 
-// SCALAR multiplication 
+// SCALAR multiplication
 template <typename NumType>
 inline Matrix<NumType> &Matrix<NumType>::operator*=(const NumType &rhs) {
   // TODO parallelisation with respect to size of a vector C++17
@@ -194,6 +196,24 @@ inline Matrix<NumType> Matrix<NumType>::operator&(const Matrix &rhs) {
   return result_m;
 };
 
+// Reordered multiplication
+template <typename NumType>
+inline Matrix<NumType> Matrix<NumType>::operator^(const Matrix &rhs) {
+  is_multi_possible(rhs);
+  Matrix<NumType> result_m(rowN_, rhs.colN_);
+  for (size_t i = 0; i < rowN_; i++)
+    for (size_t j = 0; j < rhs.colN_; j++) {
+      size_t index = i * rhs.colN_ + j;
+      result_m.m[index] = 0;
+    };
+
+  for (size_t i = 0; i < rowN_; i++)
+    for (size_t k = 0; k < colN_; k++)
+      for (size_t j = 0; j < rhs.colN_; j++) {
+        size_t index = i * rhs.colN_ + j;
+        result_m.m[index] += m[i * colN_ + k] * rhs.m[k * rhs.colN_ + j];
+      };
+  return result_m;
+};
 }; // namespace mtx
 #endif
-

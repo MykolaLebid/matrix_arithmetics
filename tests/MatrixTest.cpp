@@ -256,6 +256,29 @@ TEST_F(TestMatrixClass, MultiplyNew3By2With2By3Matrices) {
   ASSERT_THAT(m(2, 2), testing::Eq(61));
 };
 
+TEST_F(TestMatrixClass, MultiplyReoderedNew3By2With2By3Matrices) {
+  Matrix<int> m_n = GetMatix3times2();
+  Matrix<int> m_t(m_n.getTranspose());
+
+  Matrix<int> m(m_n ^ m_t);
+  //		m(0,0) = 1; m(0,1) = 2;
+  //	       	m(1,0) = 3; m(1,1) = 4;
+  //		m(2,0) = 5; m(2,1) = 6;
+
+  // first row
+  ASSERT_THAT(m(0, 0), testing::Eq(5));
+  ASSERT_THAT(m(0, 1), testing::Eq(11));
+  ASSERT_THAT(m(0, 2), testing::Eq(17));
+  // second row
+  ASSERT_THAT(m(1, 0), testing::Eq(11));
+  ASSERT_THAT(m(1, 1), testing::Eq(25));
+  ASSERT_THAT(m(1, 2), testing::Eq(39));
+  // third row
+  ASSERT_THAT(m(2, 0), testing::Eq(17));
+  ASSERT_THAT(m(2, 1), testing::Eq(39));
+  ASSERT_THAT(m(2, 2), testing::Eq(61));
+};
+
 TEST_F(TestMatrixClass, RhsMultiplicationAndCopyAssignment) {
   Matrix<int> m1 = GetMatrix_1();
   const int multiplier = 5;
@@ -302,3 +325,13 @@ TEST_F(TestMatrixClass, SpeedWithTransformMulti) {
   Matrix<int> m_multi(m * m);
 };
 
+TEST_F(TestMatrixClass, SpeedWithReorderedMulti) {
+  size_t rowN = 200;
+  size_t colN = 200;
+  Matrix<int> m(rowN, colN);
+  for (size_t i = 0; i < rowN; i++)
+    for (size_t j = 0; j < colN; j++)
+      m(i, j) = i + j;
+
+  Matrix<int> m_multi(m ^ m);
+}
