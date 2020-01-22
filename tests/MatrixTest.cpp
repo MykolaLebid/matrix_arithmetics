@@ -306,32 +306,35 @@ TEST_F(TestMatrixClass, VertorSum) {
 TEST_F(TestMatrixClass, SpeedNaiveMulti) {
   size_t rowN = 200;
   size_t colN = 200;
-  Matrix<int> m(rowN, colN);
+  Matrix<float> m(rowN, colN);
   for (size_t i = 0; i < rowN; i++)
     for (size_t j = 0; j < colN; j++)
-      m(i, j) = i + j;
+      m(i, j) = i * 1.2 + j * 1.4;
 
-  Matrix<int> m_multi(m * m);
+  Matrix<float> tran_m = m.getTranspose();
+  Matrix<float> m_multi(m * tran_m);
 };
 
 TEST_F(TestMatrixClass, SpeedWithTransformMulti) {
   size_t rowN = 200;
   size_t colN = 200;
-  Matrix<int> m(rowN, colN);
+  Matrix<float> m(rowN, colN);
   for (size_t i = 0; i < rowN; i++)
     for (size_t j = 0; j < colN; j++)
-      m(i, j) = i + j;
+      m(i, j) = i * 1.2 + j * 1.4 ;
 
-  Matrix<int> m_multi(m * m);
+  Matrix<float> tran_m = m.getTranspose();
+  Matrix<float> m_multi(m & tran_m);
 };
 
 TEST_F(TestMatrixClass, SpeedWithReorderedMulti) {
   size_t rowN = 200;
   size_t colN = 200;
-  Matrix<int> m(rowN, colN);
+  Matrix<float> m(rowN, colN);
   for (size_t i = 0; i < rowN; i++)
     for (size_t j = 0; j < colN; j++)
-      m(i, j) = i + j;
-
-  Matrix<int> m_multi(m ^ m);
+      m(i, j) = i * 1.2 + j * 1.4;
+  Matrix<float> tran_m = m.getTranspose();
+  Matrix<float> m_multi(m ^ tran_m);
+ 
 }
