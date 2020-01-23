@@ -166,6 +166,7 @@ inline Matrix<NumType> Matrix<NumType>::getTranspose() const {
       m_local.m[i * rowN_ + j] = m[j * colN_ + i];
   return m_local;
 };
+
 // Naive multiplication
 template <typename NumType>
 inline Matrix<NumType> Matrix<NumType>::operator*(const Matrix &rhs) {
@@ -174,7 +175,6 @@ inline Matrix<NumType> Matrix<NumType>::operator*(const Matrix &rhs) {
   for (size_t i = 0; i < rowN_; i++)
     for (size_t j = 0; j < rhs.colN_; j++) {
       size_t index = i * rhs.colN_ + j;
-      result_m.m[index] = 0;
       for (unsigned int k = 0; k < colN_; k++)
         result_m.m[index] += m[i * colN_ + k] * rhs.m[k * rhs.colN_ + j];
     };
@@ -186,10 +186,10 @@ inline Matrix<NumType> Matrix<NumType>::operator&(const Matrix &rhs) {
   is_multi_possible(rhs);
   Matrix<NumType> result_m(rowN_, rhs.colN_);
   Matrix<NumType> tr(rhs.getTranspose());
+  
   for (size_t i = 0; i < rowN_; i++)
     for (size_t j = 0; j < tr.rowN_; j++) {
       size_t index = i * tr.rowN_ + j;
-      result_m.m[index] = 0;
       for (unsigned int k = 0; k < colN_; k++)
         result_m.m[index] += m[i * colN_ + k] * tr.m[j * tr.colN_ + k];
     };
@@ -201,12 +201,6 @@ template <typename NumType>
 inline Matrix<NumType> Matrix<NumType>::operator^(const Matrix &rhs) {
   is_multi_possible(rhs);
   Matrix<NumType> result_m(rowN_, rhs.colN_);
-  for (size_t i = 0; i < rowN_; i++)
-    for (size_t j = 0; j < rhs.colN_; j++) {
-      size_t index = i * rhs.colN_ + j;
-      result_m.m[index] = 0;
-    };
-
   for (size_t i = 0; i < rowN_; i++)
     for (size_t k = 0; k < colN_; k++)
       for (size_t j = 0; j < rhs.colN_; j++) {
